@@ -1,0 +1,136 @@
+services:
+  # Servidor de directorio
+  directory-server:
+    build:
+      context: ./Server
+      dockerfile: Dockerfile
+    container_name: p2p-directory-server
+    ports:
+      - "50051:50051"  # Puerto gRPC
+      - "8000:8000"    # Puerto REST API (si existe)
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=50051
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./Server/src/server.log:/app/server.log
+    networks:
+      - p2p-network
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import socket; s=socket.socket(); s.settimeout(5); s.connect((\"localhost\", 50051)); s.close()'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Peer 1 - Sistema REST con autenticación
+  peer1:
+    build:
+      context: ./Peer
+      dockerfile: Dockerfile
+    container_name: p2p-peer1
+    ports:
+      - "8001:8001"    # Puerto REST API del PServer
+    environment:
+      - PEER_ID=peer1
+      - PEER_USERNAME=usuario1
+      - PEER_PASSWORD=password1
+      - PEER_HOST=0.0.0.0
+      - PEER_REST_PORT=8001
+      - SERVER_URL=directory-server:50051
+      - SHARED_DIRECTORY=/app/shared_files
+    volumes:
+      - ./shared_files:/app/shared_files
+      - peer1-downloads:/app/downloads
+      - ./Peer/src/peer.log:/app/peer.log
+    networks:
+      - p2p-network
+    depends_on:
+      directory-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Peer 2 - Sistema REST con autenticación
+  peer2:
+    build:
+      context: ./Peer
+      dockerfile: Dockerfile
+    container_name: p2p-peer2
+    ports:
+      - "8002:8002"    # Puerto REST API del PServer
+    environment:
+      - PEER_ID=peer2
+      - PEER_USERNAME=usuario2
+      - PEER_PASSWORD=password2
+      - PEER_HOST=0.0.0.0
+      - PEER_REST_PORT=8002
+      - SERVER_URL=directory-server:50051
+      - SHARED_DIRECTORY=/app/shared_files
+    volumes:
+      - ./shared_files_peer2:/app/shared_files
+      - peer2-downloads:/app/downloads
+      - ./Peer/src/peer2.log:/app/peer2.log
+    networks:
+      - p2p-network
+    depends_on:
+      directory-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8002/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Peer 3 - Sistema REST con autenticación (adicional para pruebas)
+  peer3:
+    build:
+      context: ./Peer
+      dockerfile: Dockerfile
+    container_name: p2p-peer3
+    ports:
+      - "8003:8003"    # Puerto REST API del PServer
+    environment:
+      - PEER_ID=peer3
+      - PEER_USERNAME=usuario3
+      - PEER_PASSWORD=password3
+      - PEER_HOST=0.0.0.0
+      - PEER_REST_PORT=8003
+      - SERVER_URL=directory-server:50051
+      - SHARED_DIRECTORY=/app/shared_files
+    volumes:
+      - ./shared_files_peer3:/app/shared_files
+      - peer3-downloads:/app/downloads
+      - ./Peer/src/peer3.log:/app/peer3.log
+    networks:
+      - p2p-network
+    depends_on:
+      directory-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8003/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  p2p-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  peer1-downloads:
+    driver: local
+  peer2-downloads:
+    driver: local
+  peer3-downloads:
+    driver: local

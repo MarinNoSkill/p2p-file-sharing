@@ -1,0 +1,3 @@
+Este es un archivo exclusivo del Peer 3.
+Contiene información específica para pruebas de este peer.
+Archivo de demostración para el sistema P2P con REST API.

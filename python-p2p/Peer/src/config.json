@@ -1,0 +1,22 @@
+{
+  "peer": {
+    "peer_id": "peer1",
+    "username": "usuario1",
+    "password": "password1"
+  },
+  "network": {
+    "host": "localhost",
+    "rest_port": 8001,
+    "server_url": "localhost:50051"
+  },
+  "files": {
+    "shared_directory": "./shared_files",
+    "allowed_extensions": [".txt", ".json", ".py", ".md", ".log"],
+    "max_file_size_mb": 100
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "peer_app.log",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  }
+}

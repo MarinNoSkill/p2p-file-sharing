@@ -1,0 +1,1141 @@
+{
+	"info": {
+		"_postman_id": "8f3b2299-37ca-469e-a74f-5c164e2fb0c9",
+		"name": "Sistema P2P - Proyecto 1 Telematica",
+		"description": "Collection completa para probar el sistema P2P distribuido\n\n## Configuración de Carpetas:\n- **Peer1 (8001)**: shared_files\n- **Peer2 (8002)**: shared_files_peer2\n- **Peer3 (8003)**: shared_files_peer3\n\n## 🔍 Búsqueda P2P Global:\nCuando buscas desde cualquier peer, encuentra archivos de **TODOS** los peers conectados.\n\n## 🌐 Arquitectura:\n- **Servidor Directorio**: Mantiene índice centralizado de archivos\n- **Peers P2P**: Comparten archivos entre sí de forma distribuida\n- **Autenticación**: Login obligatorio con tokens JWT\n- **Comunicación**: REST + gRPC híbrido\n\n## 📋 Los 4 Comandos Esenciales:\n1. **HEALTH** - Verificar estado\n2. **LOGIN** - Autenticación + indexación automática\n3. **CREATE** - Subir archivos\n4. **SEARCH** - Buscar en toda la red P2P\n5. **DOWNLOAD** - Descargar archivos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48509525",
+		"_collection_link": "https://camilogame342-8238531.postman.co/workspace/Camilo-Marin's-Workspace~5a29f3c3-5b6b-4a61-8ab2-afbc5115d31b/collection/48509525-8f3b2299-37ca-469e-a74f-5c164e2fb0c9?action=share&source=collection_link&creator=48509525"
+	},
+	"item": [
+		{
+			"name": "0. HEALTH CHECKS",
+			"item": [
+				{
+					"name": "Health - Peer1 (8001)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Peer1 está online\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Respuesta contiene status healthy\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('status');",
+									"    pm.expect(response.status).to.eql('healthy');",
+									"});",
+									"",
+									"pm.test(\"Tiempo de respuesta menor a 2 segundos\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"console.log(\"Health Check Peer1: PASSED\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8001/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica que el Peer1 esté funcionando"
+					},
+					"response": []
+				},
+				{
+					"name": " Health - Peer2 (8002)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Peer2 está online\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta contiene status healthy\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('status');\r",
+									"    pm.expect(response.status).to.eql('healthy');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Tiempo de respuesta menor a 2 segundos\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"console.log(\"Health Check Peer2: PASSED\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8002/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8002",
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica que el Peer2 esté funcionando"
+					},
+					"response": []
+				},
+				{
+					"name": " Health - Peer3 (8003)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Peer3 está online\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta contiene status healthy\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('status');\r",
+									"    pm.expect(response.status).to.eql('healthy');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Tiempo de respuesta menor a 2 segundos\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"console.log(\"Health Check Peer3: PASSED\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8003/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"health"
+							]
+						},
+						"description": "Verifica que el Peer3 esté funcionando"
+					},
+					"response": []
+				}
+			],
+			"description": "Verificar que todos los servicios estén funcionando correctamente"
+		},
+		{
+			"name": " 1. LOGIN (Autenticación + Indexación)",
+			"item": [
+				{
+					"name": " Login Peer1 → shared_files",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login exitoso\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Respuesta contiene token\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('success');",
+									"    pm.expect(response.success).to.be.true;",
+									"    pm.expect(response).to.have.property('token');",
+									"    pm.expect(response.token).to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Peer info es correcto\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('peer_info');",
+									"    pm.expect(response.peer_info.peer_id).to.eql('peer1');",
+									"    pm.expect(response.peer_info.port).to.eql(8001);",
+									"});",
+									"",
+									"pm.test(\"Archivos fueron indexados\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.peer_info).to.have.property('files_available');",
+									"    pm.expect(response.peer_info.files_available).to.be.a('number');",
+									"});",
+									"",
+									"// Auto-guardar token",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.token) {",
+									"        pm.globals.set('peer1_token', response.token);",
+									"        console.log(\"Token Peer1 guardado exitosamente\");",
+									"        console.log(\"Archivos indexados:\", response.peer_info.files_available);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"peer_id\": \"peer1\",\n  \"username\": \"usuario1\",\n  \"password\": \"password1\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8001/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login en Peer1 - Indexa archivos de shared_files automáticamente"
+					},
+					"response": []
+				},
+				{
+					"name": " Login Peer2 → shared_files_peer2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login exitoso\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Respuesta contiene token\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('success');",
+									"    pm.expect(response.success).to.be.true;",
+									"    pm.expect(response).to.have.property('token');",
+									"    pm.expect(response.token).to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Peer info es correcto\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('peer_info');",
+									"    pm.expect(response.peer_info.peer_id).to.eql('peer2');",
+									"    pm.expect(response.peer_info.port).to.eql(8002);",
+									"});",
+									"",
+									"pm.test(\"Archivos fueron indexados\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.peer_info).to.have.property('files_available');",
+									"    pm.expect(response.peer_info.files_available).to.be.a('number');",
+									"});",
+									"",
+									"// Auto-guardar token",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.token) {",
+									"        pm.globals.set('peer2_token', response.token);",
+									"        console.log(\"Token Peer2 guardado exitosamente\");",
+									"        console.log(\"Archivos indexados:\", response.peer_info.files_available);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"peer_id\": \"peer2\",\n  \"username\": \"usuario2\",\n  \"password\": \"password2\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8002/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8002",
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login en Peer2 - Indexa archivos de shared_files_peer2 automáticamente"
+					},
+					"response": []
+				},
+				{
+					"name": " Login Peer3 → shared_files_peer3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Login exitoso\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Respuesta contiene token\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('success');",
+									"    pm.expect(response.success).to.be.true;",
+									"    pm.expect(response).to.have.property('token');",
+									"    pm.expect(response.token).to.be.a('string');",
+									"});",
+									"",
+									"pm.test(\"Peer info es correcto\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('peer_info');",
+									"    pm.expect(response.peer_info.peer_id).to.eql('peer3');",
+									"    pm.expect(response.peer_info.port).to.eql(8003);",
+									"});",
+									"",
+									"pm.test(\"Archivos fueron indexados\", function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.peer_info).to.have.property('files_available');",
+									"    pm.expect(response.peer_info.files_available).to.be.a('number');",
+									"});",
+									"",
+									"// Auto-guardar token",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.token) {",
+									"        pm.globals.set('peer3_token', response.token);",
+									"        console.log(\"Token Peer3 guardado exitosamente\");",
+									"        console.log(\"Archivos indexados:\", response.peer_info.files_available);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"peer_id\": \"peer3\",\n  \"username\": \"usuario3\",\n  \"password\": \"password3\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8003/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login en Peer3 - Indexa archivos de shared_files_peer3 automáticamente"
+					},
+					"response": []
+				}
+			],
+			"description": "Login obligatorio que además indexa automáticamente los archivos existentes en el servidor de directorio"
+		},
+		{
+			"name": "2. CREATE (Subir Archivos)",
+			"item": [
+				{
+					"name": " Upload to Peer1 → shared_files",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Upload exitoso\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta indica éxito\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('success');\r",
+									"    pm.expect(response.success).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Archivo fue guardado\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('filename');\r",
+									"    pm.expect(response.filename).to.be.a('string');\r",
+									"    pm.expect(response).to.have.property('file_path');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Archivo fue indexado\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('indexed');\r",
+									"    pm.expect(response.indexed).to.be.true;\r",
+									"});\r",
+									"\r",
+									"console.log(\"Archivo subido e indexado:\", pm.response.json().filename);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer1_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"description": "Selecciona archivo para subir a shared_files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8001/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"create"
+							]
+						},
+						"description": "Sube archivo a Peer1 (carpeta shared_files) e indexa automáticamente"
+					},
+					"response": []
+				},
+				{
+					"name": " Upload to Peer2 → shared_files_peer2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Upload exitoso\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta indica éxito\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('success');\r",
+									"    pm.expect(response.success).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Archivo fue guardado\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('filename');\r",
+									"    pm.expect(response.filename).to.be.a('string');\r",
+									"    pm.expect(response).to.have.property('file_path');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Archivo fue indexado\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('indexed');\r",
+									"    pm.expect(response.indexed).to.be.true;\r",
+									"});\r",
+									"\r",
+									"console.log(\"Archivo subido e indexado:\", pm.response.json().filename);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer2_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"description": "Selecciona archivo para subir a shared_files_peer2",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8002/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8002",
+							"path": [
+								"create"
+							]
+						},
+						"description": "Sube archivo a Peer2 (carpeta shared_files_peer2) e indexa automáticamente"
+					},
+					"response": []
+				},
+				{
+					"name": " Upload to Peer3 → shared_files_peer3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Upload exitoso\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta indica éxito\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('success');\r",
+									"    pm.expect(response.success).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Archivo fue guardado\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('filename');\r",
+									"    pm.expect(response.filename).to.be.a('string');\r",
+									"    pm.expect(response).to.have.property('file_path');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Archivo fue indexado\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('indexed');\r",
+									"    pm.expect(response.indexed).to.be.true;\r",
+									"});\r",
+									"\r",
+									"console.log(\"Archivo subido e indexado:\", pm.response.json().filename);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer3_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"description": "Selecciona archivo para subir a shared_files_peer3",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8003/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"create"
+							]
+						},
+						"description": "Sube archivo a Peer3 (carpeta shared_files_peer3) e indexa automáticamente"
+					},
+					"response": []
+				}
+			],
+			"description": "Subir archivos a cada peer. Los archivos se almacenan localmente y se indexan automáticamente en el servidor de directorio."
+		},
+		{
+			"name": " 3. SEARCH (Búsqueda P2P Global)",
+			"item": [
+				{
+					"name": "Search 'documento' desde Peer1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Búsqueda exitosa\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta contiene resultados\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('success');\r",
+									"    pm.expect(response.success).to.be.true;\r",
+									"    pm.expect(response).to.have.property('results');\r",
+									"    pm.expect(response).to.have.property('results_count');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Contador de resultados es correcto\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response.results_count).to.eql(response.results.length);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resultados tienen estructura correcta\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    if (response.results.length > 0) {\r",
+									"        const firstResult = response.results[0];\r",
+									"        pm.expect(firstResult).to.have.property('filename');\r",
+									"        pm.expect(firstResult).to.have.property('file_size');\r",
+									"        pm.expect(firstResult).to.have.property('peer_info');\r",
+									"        pm.expect(firstResult.peer_info).to.have.property('peer_id');\r",
+									"        pm.expect(firstResult.peer_info).to.have.property('ip');\r",
+									"        pm.expect(firstResult.peer_info).to.have.property('port');\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Búsqueda P2P funciona (encuentra archivos de otros peers)\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    if (response.results.length > 0) {\r",
+									"        const peerIds = response.results.map(r => r.peer_info.peer_id);\r",
+									"        const uniquePeers = [...new Set(peerIds)];\r",
+									"        console.log(\"Peers con archivos encontrados:\", uniquePeers);\r",
+									"        console.log(\"Total archivos encontrados:\", response.results_count);\r",
+									"        \r",
+									"        // Si hay más de 1 peer único, significa que la búsqueda P2P funciona\r",
+									"        if (uniquePeers.length > 1) {\r",
+									"            console.log(\"ÉXITO: Búsqueda P2P cross-peer funcionando correctamente\");\r",
+									"        }\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"console.log(\"Búsqueda completada - Resultados:\", pm.response.json().results_count);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer1_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"documento\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8001/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"search"
+							]
+						},
+						"description": "Busca archivos que contengan 'documento' en TODOS los peers"
+					},
+					"response": []
+				},
+				{
+					"name": " Search 'archivo' desde Peer2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Búsqueda exitosa\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta contiene resultados\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('success');\r",
+									"    pm.expect(response.success).to.be.true;\r",
+									"    pm.expect(response).to.have.property('results');\r",
+									"    pm.expect(response).to.have.property('results_count');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Contador de resultados es correcto\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response.results_count).to.eql(response.results.length);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resultados tienen estructura correcta\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    if (response.results.length > 0) {\r",
+									"        const firstResult = response.results[0];\r",
+									"        pm.expect(firstResult).to.have.property('filename');\r",
+									"        pm.expect(firstResult).to.have.property('file_size');\r",
+									"        pm.expect(firstResult).to.have.property('peer_info');\r",
+									"        pm.expect(firstResult.peer_info).to.have.property('peer_id');\r",
+									"        pm.expect(firstResult.peer_info).to.have.property('ip');\r",
+									"        pm.expect(firstResult.peer_info).to.have.property('port');\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Búsqueda P2P funciona (encuentra archivos de otros peers)\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    if (response.results.length > 0) {\r",
+									"        const peerIds = response.results.map(r => r.peer_info.peer_id);\r",
+									"        const uniquePeers = [...new Set(peerIds)];\r",
+									"        console.log(\"Peers con archivos encontrados:\", uniquePeers);\r",
+									"        console.log(\"Total archivos encontrados:\", response.results_count);\r",
+									"        \r",
+									"        // Si hay más de 1 peer único, significa que la búsqueda P2P funciona\r",
+									"        if (uniquePeers.length > 1) {\r",
+									"            console.log(\"ÉXITO: Búsqueda P2P cross-peer funcionando correctamente\");\r",
+									"        }\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"console.log(\"Búsqueda completada - Resultados:\", pm.response.json().results_count);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer2_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"archivo\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8002/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8002",
+							"path": [
+								"search"
+							]
+						},
+						"description": "Busca archivos que contengan 'archivo' en TODOS los peers"
+					},
+					"response": []
+				},
+				{
+					"name": " Search '.txt' desde Peer3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Búsqueda exitosa\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta contiene resultados\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('success');\r",
+									"    pm.expect(response.success).to.be.true;\r",
+									"    pm.expect(response).to.have.property('results');\r",
+									"    pm.expect(response).to.have.property('results_count');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Contador de resultados es correcto\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response.results_count).to.eql(response.results.length);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resultados tienen estructura correcta\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    if (response.results.length > 0) {\r",
+									"        const firstResult = response.results[0];\r",
+									"        pm.expect(firstResult).to.have.property('filename');\r",
+									"        pm.expect(firstResult).to.have.property('file_size');\r",
+									"        pm.expect(firstResult).to.have.property('peer_info');\r",
+									"        pm.expect(firstResult.peer_info).to.have.property('peer_id');\r",
+									"        pm.expect(firstResult.peer_info).to.have.property('ip');\r",
+									"        pm.expect(firstResult.peer_info).to.have.property('port');\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Búsqueda P2P funciona (encuentra archivos de otros peers)\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    if (response.results.length > 0) {\r",
+									"        const peerIds = response.results.map(r => r.peer_info.peer_id);\r",
+									"        const uniquePeers = [...new Set(peerIds)];\r",
+									"        console.log(\"Peers con archivos encontrados:\", uniquePeers);\r",
+									"        console.log(\"Total archivos encontrados:\", response.results_count);\r",
+									"        \r",
+									"        // Si hay más de 1 peer único, significa que la búsqueda P2P funciona\r",
+									"        if (uniquePeers.length > 1) {\r",
+									"            console.log(\"ÉXITO: Búsqueda P2P cross-peer funcionando correctamente\");\r",
+									"        }\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"console.log(\"Búsqueda completada - Resultados:\", pm.response.json().results_count);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer3_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \".txt\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8003/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"search"
+							]
+						},
+						"description": "Busca todos los archivos .txt en TODOS los peers"
+					},
+					"response": []
+				},
+				{
+					"name": " Search ALL files desde Peer1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Búsqueda global exitosa\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Muestra todos los archivos de la red\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    pm.expect(response).to.have.property('results');\r",
+									"    pm.expect(response.results).to.be.an('array');\r",
+									"    \r",
+									"    if (response.results.length > 0) {\r",
+									"        console.log(\"ARCHIVOS EN LA RED P2P:\");\r",
+									"        response.results.forEach((file, index) => {\r",
+									"            console.log(`${index + 1}. ${file.filename} (${file.file_size} bytes) - Peer: ${file.peer_info.peer_id}`);\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Red P2P distribuida funcionando\", function () {\r",
+									"    const response = pm.response.json();\r",
+									"    if (response.results.length > 0) {\r",
+									"        const peerIds = response.results.map(r => r.peer_info.peer_id);\r",
+									"        const uniquePeers = [...new Set(peerIds)];\r",
+									"        \r",
+									"        pm.expect(uniquePeers.length).to.be.above(0);\r",
+									"        console.log(\"Peers activos en la red:\", uniquePeers);\r",
+									"        console.log(\"Total archivos distribuidos:\", response.results_count);\r",
+									"    }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer1_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8001/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"search"
+							]
+						},
+						"description": "Lista TODOS los archivos disponibles en la red P2P"
+					},
+					"response": []
+				}
+			],
+			"description": "Buscar archivos en TODA la red P2P. Cada peer puede buscar archivos que estén en cualquier otro peer conectado."
+		},
+		{
+			"name": " 4. DOWNLOAD (Descargar Archivos)",
+			"item": [
+				{
+					"name": " Download documento.txt from Peer1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Download exitoso\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type es correcto\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/octet-stream');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Archivo tiene contenido\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.above(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Disposition header presente\", function () {\r",
+									"    const disposition = pm.response.headers.get('Content-Disposition');\r",
+									"    pm.expect(disposition).to.include('attachment');\r",
+									"    pm.expect(disposition).to.include('filename=');\r",
+									"});\r",
+									"\r",
+									"console.log(\"Archivo descargado exitosamente - Tamaño:\", pm.response.responseSize, \"bytes\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer1_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8001/download/documento.txt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"download",
+								"documento.txt"
+							]
+						},
+						"description": "Descarga documento.txt desde Peer1"
+					},
+					"response": []
+				},
+				{
+					"name": " Download documento_peer2.txt from Peer2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Download exitoso\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type es correcto\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/octet-stream');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Archivo tiene contenido\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.above(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Disposition header presente\", function () {\r",
+									"    const disposition = pm.response.headers.get('Content-Disposition');\r",
+									"    pm.expect(disposition).to.include('attachment');\r",
+									"    pm.expect(disposition).to.include('filename=');\r",
+									"});\r",
+									"\r",
+									"console.log(\"Archivo descargado exitosamente - Tamaño:\", pm.response.responseSize, \"bytes\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer2_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8002/download/documento_peer2.txt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8002",
+							"path": [
+								"download",
+								"documento_peer2.txt"
+							]
+						},
+						"description": "Descarga documento_peer2.txt desde Peer2"
+					},
+					"response": []
+				},
+				{
+					"name": " Download archivo_peer3.txt from Peer3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Download exitoso\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type es correcto\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/octet-stream');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Archivo tiene contenido\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.above(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Disposition header presente\", function () {\r",
+									"    const disposition = pm.response.headers.get('Content-Disposition');\r",
+									"    pm.expect(disposition).to.include('attachment');\r",
+									"    pm.expect(disposition).to.include('filename=');\r",
+									"});\r",
+									"\r",
+									"console.log(\"Archivo descargado exitosamente - Tamaño:\", pm.response.responseSize, \"bytes\");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{peer3_token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8003/download/archivo_peer3.txt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"download",
+								"archivo_peer3.txt"
+							]
+						},
+						"description": "Descarga archivo_peer3.txt desde Peer3"
+					},
+					"response": []
+				}
+			],
+			"description": "Descargar archivos desde cualquier peer. Usa los resultados de la búsqueda para saber qué archivos están disponibles."
+		}
+	]
+}

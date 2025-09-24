@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package p2p;
+
+// Servicio principal para la comunicación P2P
+service PeerService {
+    // Autenticación y gestión de sesión
+    rpc Login(LoginRequest) returns (LoginResponse);
+    rpc Logout(LogoutRequest) returns (LogoutResponse);
+    
+    // Gestión de archivos
+    rpc Index(IndexRequest) returns (IndexResponse);
+    rpc Search(SearchRequest) returns (SearchResponse);
+    
+    // Servicios adicionales para el peer
+    rpc GetPeerInfo(PeerInfoRequest) returns (PeerInfoResponse);
+    rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse);
+}
+
+// Servicio para transferencia de archivos entre peers
+service FileService {
+    rpc Download(DownloadRequest) returns (stream FileChunk);
+    rpc Upload(stream FileChunk) returns (UploadResponse);
+    rpc GetFileInfo(FileInfoRequest) returns (FileInfoResponse);
+}
+
+// === Mensajes de autenticación ===
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+    string peer_url = 3;
+    int32 port = 4;
+    string peer_id = 5;
+}
+
+message LoginResponse {
+    bool success = 1;
+    string token = 2;
+    string message = 3;
+    repeated PeerInfo connected_peers = 4;
+}
+
+message LogoutRequest {
+    string token = 1;
+    string peer_id = 2;
+}
+
+message LogoutResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+// === Mensajes de gestión de archivos ===
+message IndexRequest {
+    string token = 1;
+    string peer_id = 2;
+    repeated FileMetadata files = 3;
+}
+
+message IndexResponse {
+    bool success = 1;
+    string message = 2;
+    int32 files_indexed = 3;
+}
+
+message SearchRequest {
+    string token = 1;
+    string peer_id = 2;
+    string filename = 3;
+    string file_pattern = 4;  // Para búsquedas con wildcards
+}
+
+message SearchResponse {
+    bool success = 1;
+    string message = 2;
+    repeated FileLocation results = 3;
+}
+
+// === Mensajes de información de peers ===
+message PeerInfoRequest {
+    string token = 1;
+    string peer_id = 2;
+}
+
+message PeerInfoResponse {
+    bool success = 1;
+    repeated PeerInfo peers = 2;
+}
+
+message HeartbeatRequest {
+    string token = 1;
+    string peer_id = 2;
+    int64 timestamp = 3;
+}
+
+message HeartbeatResponse {
+    bool success = 1;
+    int64 server_timestamp = 2;
+    int32 active_peers = 3;
+}
+
+// === Mensajes de transferencia de archivos ===
+message DownloadRequest {
+    string filename = 1;
+    string token = 2;
+    string requesting_peer_id = 3;
+    int64 offset = 4;  // Para descargas parciales
+    int64 chunk_size = 5;
+}
+
+message FileChunk {
+    string filename = 1;
+    bytes data = 2;
+    int64 offset = 3;
+    int64 total_size = 4;
+    bool is_last = 5;
+    string checksum = 6;  // MD5 del chunk
+}
+
+message UploadResponse {
+    bool success = 1;
+    string message = 2;
+    string file_id = 3;
+    int64 bytes_received = 4;
+}
+
+message FileInfoRequest {
+    string filename = 1;
+    string token = 2;
+}
+
+message FileInfoResponse {
+    bool success = 1;
+    FileMetadata file_info = 2;
+    string message = 3;
+}
+
+// === Tipos de datos ===
+message FileMetadata {
+    string filename = 1;
+    string file_path = 2;
+    int64 file_size = 3;
+    string file_hash = 4;  // Hash MD5 del archivo
+    int64 last_modified = 5;  // Timestamp
+    string mime_type = 6;
+    repeated string tags = 7;  // Para categorización
+}
+
+message FileLocation {
+    FileMetadata file_info = 1;
+    PeerInfo peer_info = 2;
+    string download_url = 3;
+    bool is_available = 4;
+}
+
+message PeerInfo {
+    string peer_id = 1;
+    string username = 2;
+    string url = 3;
+    int32 port = 4;
+    bool is_online = 5;
+    int64 last_seen = 6;
+    int32 file_count = 7;
+    repeated string shared_directories = 8;
+}

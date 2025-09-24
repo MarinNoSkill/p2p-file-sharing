@@ -1,0 +1,2 @@
+Documento especial del Peer 3.
+Este archivo contiene datos únicos para testing del peer 3.
